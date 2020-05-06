@@ -3,7 +3,7 @@ Free Instagram bot implemented in Kotlin to perform all major operations support
 
 This bot is inspired from [Instabot](https://github.com/instagrambot/instabot)
 
-## Buit with
+## Built with
 [Kotlin](https://kotlinlang.org/) - A modern programming language for Android/JVM that makes developers happier.
 
 [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous programming
