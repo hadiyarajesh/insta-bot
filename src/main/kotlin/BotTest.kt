@@ -21,4 +21,5 @@ fun main() = runBlocking  {
     bot.approveAllPendingFollowRequests().collect { println(it) }
     bot.commentTimelineMedias("This is an example of nice comment", 5)
     bot.downloadUserStories("username").collect { println(it) }
+    bot.followUsers(listOf("username1", "username2")).collect { println(it) }
 }
