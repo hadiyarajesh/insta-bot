@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.collect
 @ExperimentalCoroutinesApi
 fun main() = runBlocking  {
 
-    val username = "annon202020"
-    val password = "Bahuthard"
+    val username = "your_username"
+    val password = "your_password"
 
     val bot = InstagramBot()
     bot.prepare(username, password)
@@ -15,4 +15,10 @@ fun main() = runBlocking  {
 
     bot.getSelfFollowing(Int.MAX_VALUE, isUsername = true).collect { println(it) }
     bot.getExploreTabMedias(7).collect { println(it) }
+    bot.getMediasByLocation("location_name", 5).collect { println(it) }
+    bot.likeHashTagMedias("cat", 5).collect { println(it) }
+    bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect { println(it) }
+    bot.approveAllPendingFollowRequests().collect { println(it) }
+    bot.commentTimelineMedias("This is an example of nice comment", 5)
+    bot.downloadUserStories("instagram").collect { println(it) }
 }
