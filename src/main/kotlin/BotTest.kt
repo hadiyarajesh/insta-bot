@@ -20,5 +20,5 @@ fun main() = runBlocking  {
     bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect { println(it) }
     bot.approveAllPendingFollowRequests().collect { println(it) }
     bot.commentTimelineMedias("This is an example of nice comment", 5)
-    bot.downloadUserStories("instagram").collect { println(it) }
+    bot.downloadUserStories("username").collect { println(it) }
 }
