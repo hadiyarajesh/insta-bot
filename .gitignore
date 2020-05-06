@@ -1,0 +1,6 @@
+# Project exclude paths
+/.gradle/
+/build/
+/photos/
+/stories/
+/videos/
