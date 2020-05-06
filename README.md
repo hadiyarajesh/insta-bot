@@ -1,7 +1,6 @@
 # Instabot
 Free Instagram bot implemented in Kotlin to perform all major operations supported by Instagram app. You can call this bot from Kotlin/Java.
 
-This bot is inspired from [Instabot](https://github.com/instagrambot/instabot)
 
 ## Built with
 [Kotlin](https://kotlinlang.org/) - A modern programming language for Android/JVM that makes developers happier.
