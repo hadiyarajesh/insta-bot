@@ -14,6 +14,7 @@ fun main() = runBlocking  {
     bot.login()
 
     bot.getSelfFollowing(Int.MAX_VALUE, isUsername = true).collect { println(it) }
+    bot.getUserFollowers("user_name", 100, isUsername = true).collect { println(it) }
     bot.getExploreTabMedias(7).collect { println(it) }
     bot.getMediasByLocation("location_name", 5).collect { println(it) }
     bot.likeHashTagMedias("cat", 5).collect { println(it) }
