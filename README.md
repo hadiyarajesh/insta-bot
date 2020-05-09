@@ -1,9 +1,8 @@
 # Instabot
 Free Instagram bot implemented in Kotlin to perform all major operations supported by Instagram app. You can call this bot from Kotlin/Java.
 
-This bot is inspired from [Instabot](https://github.com/instagrambot/instabot)
 
-## Buit with
+## Built with
 [Kotlin](https://kotlinlang.org/) - A modern programming language for Android/JVM that makes developers happier.
 
 [Coroutines](https://kotlinlang.org/docs/reference/coroutines-overview.html) - For asynchronous programming
@@ -33,7 +32,7 @@ bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
 
 ## Documentation
-Coming soon...
+[You can find documentation here](https://hadiyarajesh.github.io/docs.html)
 
 ## Terms and conditions
 - You will NOT use this API for marketing purposes (spam, botting, harassment).
