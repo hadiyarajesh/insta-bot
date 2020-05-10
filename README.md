@@ -31,6 +31,9 @@ bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect 
 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
 
+## Samples
+[You can find sample scripts here](https://github.com/hadiyarajesh/insta-bot/tree/master/src/main/kotlin/samples)
+
 ## Documentation
 [You can find documentation here](https://hadiyarajesh.github.io/quick-start.html)
 
