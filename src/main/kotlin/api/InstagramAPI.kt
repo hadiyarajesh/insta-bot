@@ -23,7 +23,6 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-
 object InstagramAPI {
     var username: String = "username"
     var password: String = "password"
