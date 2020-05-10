@@ -34,6 +34,7 @@ dokka {
 
     configuration {
         includeNonPublic = false
+
         perPackageOption {
             prefix = "api"
             suppress = true
@@ -42,6 +43,7 @@ dokka {
             prefix = "util"
             suppress = true
         }
+
         perPackageOption {
             prefix = "com.nfeld.jsonpathlite"
             suppress = true
