@@ -6,7 +6,7 @@ Free Instagram bot implemented in Kotlin to perform all major operations support
 - Comment medias
 - Direct messages
 - Story viewing
-- Downlaod medias
+- Download medias
 - And more...
 
 ## Built with
