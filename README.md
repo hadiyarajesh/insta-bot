@@ -11,6 +11,24 @@ Free Instagram bot implemented in Kotlin to perform all major operations support
 
 [JsonPathLite](https://github.com/codeniko/JsonPathLite) - A lighter and more efficient implementation of JsonPath in Kotlin
 
+## Installation
+
+Add JitPack to your build.gradle file
+```
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+
+Add Gradle dependency as 
+```
+dependencies {
+    implementation 'com.github.hadiyarajesh:insta-bot:1.0.0'
+}
+```
 
 ## Quick start
 Initialize InstagramBot class with your username and password and call prepare method. Then call login method to login into instagram. (Prepare method must be called before login)
@@ -31,8 +49,14 @@ bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect 
 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
 
+## Samples
+[You can find sample scripts here](https://github.com/hadiyarajesh/insta-bot/tree/master/src/main/kotlin/samples)
+
 ## Documentation
 [You can find documentation here](https://hadiyarajesh.github.io/quick-start.html)
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
 ## Terms and conditions
 - You will NOT use this API for marketing purposes (spam, botting, harassment).
@@ -41,3 +65,6 @@ For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/
 
 ## Legal
 This code is in no way affiliated with, authorized, maintained, sponsored or endorsed by Instagram, Facebook inc. or any of its affiliates or subsidiaries. This is an independent and unofficial API. Use it at your own risk.
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
