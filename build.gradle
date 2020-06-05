@@ -3,8 +3,8 @@ plugins {
     id 'org.jetbrains.dokka' version '0.10.1'
 }
 
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'com.hadiyarajesh.instabot'
+version '1.0.0'
 
 repositories {
     mavenCentral()
