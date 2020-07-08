@@ -26,9 +26,9 @@ fun main() = runBlocking  {
     bot.getExploreTabMedias(7).collect { println(it) }
     bot.getMediasByLocation("location_name", 5).collect { println(it) }
     bot.likeHashTagMedias("hashtag_name", 5).collect { println(it) }
-    bot.commentHashTagMedias("hashtag_name", "This is an example of nice comment",5).collect { println(it) }
+    bot.commentHashTagMedias("hashtag_name", listOf("Comment1", "Comment2"),5).collect { println(it) }
     bot.approveAllPendingFollowRequests().collect { println(it) }
-    bot.commentTimelineMedias("This is an example of nice comment", 5)
+    bot.commentTimelineMedias(listOf("Comment1", "Comment2"), 5)
     bot.downloadUserStories("user_name").collect { println(it) }
     bot.followUsers(listOf("user_name_1", "user_name_2")).collect { println(it) }
 }
