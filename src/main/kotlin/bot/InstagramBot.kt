@@ -25,9 +25,9 @@ class InstagramBot(
         maxBlocksPerDay: Int = 100,
         maxUnblocksPerDay: Int = 100,
         maxMessagesPerDay: Int = 300,
-        val blockedActionProtection: Boolean = true,
-        val blockedActionSleep: Boolean = false,
-        val blockedActionSleepDelay: Int = 300
+        private val blockedActionProtection: Boolean = true,
+        private val blockedActionSleep: Boolean = false,
+        private val blockedActionSleepDelay: Int = 300
 ) {
 
     /**
@@ -871,7 +871,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before liking post")
             delay(sleepTimeInMillis * 1000L)
             api.like(
                 mediaId = mediaId, containerModule = containerModule, feedPosition = feedPosition,
@@ -948,10 +948,7 @@ class InstagramBot(
      * Like provided numbers of medias appear on timeline of logged in user(self)
      */
     suspend fun likeTimelineMedias(amount: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getTimelineMedias(amount).toList().forEach {
-            mediaIds.add(it?.read<Long>("$.pk").toString())
-        }
+        val mediaIds = getTimelineMedias(amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
 
@@ -959,10 +956,7 @@ class InstagramBot(
      * Like provided numbers of media of provided user
      */
     suspend fun likeUserMedias(username: String, amount: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getLastUserMedias(convertToUserId(username), amount).toList().forEach {
-            mediaIds.add(it.read<Long>("$.pk").toString())
-        }
+        val mediaIds = getLastUserMedias(username, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
 
@@ -970,10 +964,7 @@ class InstagramBot(
      * Like provided numbers of media appears in explore tab of logged in user(self)
      */
     suspend fun likeExploreTabMedias(amount: Int): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getExploreTabMedias(amount).toList().forEach {
-            mediaIds.add(it.get("pk").toString())
-        }
+        val mediaIds = getExploreTabMedias(amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
 
@@ -981,10 +972,7 @@ class InstagramBot(
      * Like provided numbers of media of provided hashtag
      */
     suspend fun likeHashTagMedias(hashTag: String, amount: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getHashTagMedias(hashTag, amount).toList().forEach {
-            mediaIds.add(it.read<Long>("$.pk").toString())
-        }
+        val mediaIds = getHashTagMedias(hashTag, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
 
@@ -992,18 +980,14 @@ class InstagramBot(
      * Like provided numbers of media of provided location
      */
     suspend fun likeLocationMedias(locationName: String, amount: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getMediasByLocation(locationName, amount).toList().forEach {
-            mediaIds.add(it.read<Long>("$.pk").toString())
-        }
-
+        val mediaIds = getMediasByLocation(locationName, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
      * Like provided numbers of media of followers of provided user
      */
-    suspend fun likeUserFollowers(username: String, amountOfFollowers: Int = 1, amountOfMedias: Int = 1): Flow<String> {
+    suspend fun likeMediasOfUsersFollowers(username: String, amountOfFollowers: Int = 1, amountOfMedias: Int = 1): Flow<String> {
         val mediaIds = mutableListOf<String>()
         val followers = getUserFollowers(username, amountOfFollowers).toList()
         followers.forEach { it ->
@@ -1019,7 +1003,7 @@ class InstagramBot(
     /**
      * Like provided numbers of media of following of provided user
      */
-    suspend fun likeUserFollowing(username: String, amountOfFollowing: Int = 1, amountOfMedias: Int = 1): Flow<String> {
+    suspend fun likeMediasOfUsersFollowing(username: String, amountOfFollowing: Int = 1, amountOfMedias: Int = 1): Flow<String> {
         val mediaIds = mutableListOf<String>()
         val following = getUserFollowing(username, amountOfFollowing).toList()
         following.forEach { it ->
@@ -1039,7 +1023,7 @@ class InstagramBot(
         if (!reachedLimit("unlikes")) {
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before unliking a post")
             delay(sleepTimeInMillis * 1000L)
 
             if (api.unlike(mediaId)) {
@@ -1069,11 +1053,8 @@ class InstagramBot(
      * Unlike(previously liked) provided number of medias of provided user
      */
     suspend fun unlikeUserMedias(username: String, amount: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getLastUserMedias(convertToUserId(username), amount).toList().forEach {
-            mediaIds.add(it.read<Long>("$.pk").toString())
-        }
-        return unlikeMedias(mediaIds = mediaIds)
+        val mediaIds = getLastUserMedias(username, amount).toList().map { it.get("pk").toString() }
+        return likeMedias(mediaIds = mediaIds)
     }
 
     /**
@@ -1090,7 +1071,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before liking a comment")
             delay(sleepTimeInMillis * 1000L)
 
             api.likeComment(commentId)
@@ -1281,7 +1262,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before following user")
             delay(sleepTimeInMillis * 1000L)
 
             api.follow(convertToUserId(userId))
@@ -1381,7 +1362,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before unfollowing user")
             delay(sleepTimeInMillis * 1000L)
 
             api.unfollow(convertToUserId(userId))
@@ -1945,7 +1926,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before commenting post")
             delay(sleepTimeInMillis * 1000L)
 
             api.comment(mediaId = mediaId, commentText = commentText)
@@ -2012,7 +1993,7 @@ class InstagramBot(
             }
 
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before replying to comment")
             delay(sleepTimeInMillis * 1000L)
 
             api.replyToComment(mediaId = mediaId, parentCommentId = parentCommentId, commentText = commentText)
@@ -2034,13 +2015,14 @@ class InstagramBot(
     /**
      * Comment provided medias with provided comment text
      */
-    fun commentMedias(mediaIds: List<String>, commentText: String): Flow<String> = flow {
+    fun commentMedias(mediaIds: List<String>, commentList: List<String>): Flow<String> = flow {
         mediaIds.forEach {
             if (reachedLimit("comments")) {
                 println("out of comments for today")
                 return@flow
             }
 
+            val commentText = commentList[Random.nextInt(0, commentList.size-1)]
             if (comment(mediaId = it, commentText = commentText)) {
                 emit(it)
             } else {
@@ -2052,34 +2034,25 @@ class InstagramBot(
     /**
      * Comment provided number of medias from explore page of logged in user(self) with provided comment text
      */
-    suspend fun commentExploreTabMedias(commentText: String, amountOfMedias: Int): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getExploreTabMedias(amountOfMedias).toList().forEach {
-            mediaIds.add(it.get("pk").toString())
-        }
-        return commentMedias(mediaIds = mediaIds, commentText = commentText)
+    suspend fun commentExploreTabMedias(commentList: List<String>, amountOfMedias: Int): Flow<String> {
+        val mediaIds = getExploreTabMedias(amountOfMedias).toList().map { it.get("pk").toString() }
+        return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
      * Comment provided number of hashtag medias with provided comment text
      */
-    suspend fun commentHashTagMedias(hashTag: String, commentText: String, amountOfMedias: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getHashTagMedias(hashTag, amountOfMedias).toList().forEach {
-            mediaIds.add(it?.read<Long>("$.pk").toString())
-        }
-        return commentMedias(mediaIds = mediaIds, commentText = commentText)
+    suspend fun commentHashTagMedias(hashTag: String, commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        val mediaIds = getHashTagMedias(hashTag, amountOfMedias).toList().map { it.get("pk").toString() }
+        return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
      * Comment provided number of medias of provided user with provided comment text
      */
-    suspend fun commentUserMedias(username: String, commentText: String, amountOfMedias: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getLastUserMedias(convertToUserId(username), amountOfMedias).toList().forEach {
-            mediaIds.add(it?.read<Long>("$.pk").toString())
-        }
-        return commentMedias(mediaIds = mediaIds, commentText = commentText)
+    suspend fun commentUserMedias(username: String, commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        val mediaIds = getLastUserMedias(username, amountOfMedias).toList().map { it.get("pk").toString() }
+        return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
@@ -2087,27 +2060,19 @@ class InstagramBot(
      */
     suspend fun commentLocationMedias(
             locationName: String,
-            commentText: String,
+            commentList: List<String>,
             amountOfMedias: Int = 5
     ): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getMediasByLocation(locationName, amountOfMedias).toList().forEach {
-            mediaIds.add(it?.read<Long>("$.pk").toString())
-        }
-
-        return commentMedias(mediaIds = mediaIds, commentText = commentText)
+        val mediaIds = getMediasByLocation(locationName, amountOfMedias).toList().map { it.get("pk").toString() }
+        return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
      * Comment provided number of medias from timeline of logged in user(self) with provided comment text
      */
-    suspend fun commentTimelineMedias(commentText: String, amountOfMedias: Int = 5): Flow<String> {
-        val mediaIds = mutableListOf<String>()
-        getTimelineMedias(amountOfMedias).toList().forEach {
-            mediaIds.add(it?.read<Long>("$.pk").toString())
-
-        }
-        return commentMedias(mediaIds = mediaIds, commentText = commentText)
+    suspend fun commentTimelineMedias(commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        val mediaIds = getTimelineMedias(amountOfMedias).toList().map { it.get("pk").toString() }
+        return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
@@ -2116,7 +2081,7 @@ class InstagramBot(
     private suspend fun block(username: String): Boolean {
         if (!reachedLimit("blocks")) {
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before blocking user")
             delay(sleepTimeInMillis * 1000L)
 
             if (api.block(convertToUserId(username))) {
@@ -2135,7 +2100,7 @@ class InstagramBot(
     private suspend fun unblock(username: String): Boolean {
         if (!reachedLimit("unblocks")) {
             val sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
-            println("Sleeping $sleepTimeInMillis seconds")
+            println("Sleeping $sleepTimeInMillis seconds before unblocking user")
             delay(sleepTimeInMillis * 1000L)
 
             if (api.unblock(convertToUserId(username))) {
