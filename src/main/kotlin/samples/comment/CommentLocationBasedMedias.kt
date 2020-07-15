@@ -16,8 +16,8 @@ fun main() = runBlocking {
     bot.login()
 
     val locationName = "enter_location_name_here"
-    val commentText = "enter_your_comment_here"
+    val commentList = listOf("Comment 1", "Comment 2")
     val howManyMediasYouWantToComment = 10
 
-    bot.commentLocationMedias(locationName, commentText, howManyMediasYouWantToComment).collect { println(it) }
+    bot.commentLocationMedias(locationName, commentList, howManyMediasYouWantToComment).collect { println(it) }
 }

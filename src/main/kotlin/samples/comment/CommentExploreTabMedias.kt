@@ -15,8 +15,8 @@ fun main() = runBlocking {
     bot.prepare(username, password)
     bot.login()
 
-    val commentText = "enter_your_comment_here"
+    val commentList = listOf("Comment 1", "Comment 2")
     val howManyMediasYouWantToComment = 10
 
-    bot.commentExploreTabMedias(commentText, howManyMediasYouWantToComment).collect { println(it) }
+    bot.commentExploreTabMedias(commentList, howManyMediasYouWantToComment).collect { println(it) }
 }

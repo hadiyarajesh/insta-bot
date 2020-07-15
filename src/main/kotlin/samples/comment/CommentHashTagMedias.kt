@@ -16,8 +16,8 @@ fun main() = runBlocking {
     bot.login()
 
     val hashTagName = "enter_hashtag_name_here"
-    val commentText = "enter_your_comment_here"
+    val commentList = listOf("Comment 1", "Comment 2")
     val howManyMediasYouWantToComment = 10
 
-    bot.commentHashTagMedias(hashTagName, commentText, howManyMediasYouWantToComment).collect { println(it) }
+    bot.commentHashTagMedias(hashTagName, commentList, howManyMediasYouWantToComment).collect { println(it) }
 }
