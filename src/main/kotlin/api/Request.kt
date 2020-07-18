@@ -4,7 +4,6 @@ import util.LoginException
 import com.nfeld.jsonpathlite.JsonPath
 import khttp.get
 import khttp.post
-import khttp.responses.Response
 import khttp.structures.cookie.CookieJar
 import util.Crypto
 import util.HTTP
@@ -25,7 +24,7 @@ class Request {
             payload: String = "",
             header: Map<String, String>? = null,
             extraSig: Map<String, String>? = null,
-            API_URL: String = "https://i.instagram.com/api/v1/"
+            API_URL: String = HTTP.API_URL
     ): Request {
         url = "$API_URL$endpoint"
         data = payload
@@ -49,13 +48,8 @@ class Request {
             throw LoginException("Please login first")
         }
 
-        val response: Response
-        if (isGet) {
-            response = if (persistedCookies == null) {
-                get(url = url, headers = headers)
-            } else {
-                get(url = url, headers = headers, cookies = persistedCookies)
-            }
+        val response = if (isGet) {
+            get(url = url, headers = headers, cookies = persistedCookies)
         } else {
             val signature = data.let { Crypto.signData(it) }
             val payload = mutableMapOf(
@@ -63,12 +57,8 @@ class Request {
                 "ig_sig_key_version" to signature.sigKeyVersion
             )
 
-            response = if (persistedCookies == null) {
-                post(url, headers = headers, data = payload)
-            } else {
-                extraSignature?.let { payload.putAll(it) }
-                post(url, headers = headers, data = payload, cookies = persistedCookies, allowRedirects = true)
-            }
+            extraSignature?.let { payload.putAll(it) }
+            post(url = url, headers = headers, data = payload, cookies = persistedCookies)
         }
 
         if (persistedCookies == null) {

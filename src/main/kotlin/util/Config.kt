@@ -7,15 +7,15 @@ Configuration file of the project
 */
 
 object KEY {
-    val SIG_KEY: String = "5f3e50f435583c9ae626302a71f7340044087a7e2c60adacfc254205a993e305"
-    val SIG_KEY_VERSION: String = "4"
-    val APP_VERSION: String = "105.0.0.18.119"
+    const val SIG_KEY: String = "5f3e50f435583c9ae626302a71f7340044087a7e2c60adacfc254205a993e305"
+    const val SIG_KEY_VERSION: String = "4"
+    const val APP_VERSION: String = "105.0.0.18.119"
 }
 
 object HTTP {
-    val HOST_NAME = "i.instagram.com"
-    val HOST = "https://$HOST_NAME/"
-    val API_URL = "${HOST}api/v1/"
+    private const val HOST_NAME = "i.instagram.com"
+    private const val HOST = "https://$HOST_NAME/"
+    const val API_URL = "${HOST}api/v1/"
 
     val HEADERS = mutableMapOf(
         "User-Agent" to USER_AGENT,

@@ -948,6 +948,7 @@ class InstagramBot(
      * Like provided numbers of medias appear on timeline of logged in user(self)
      */
     suspend fun likeTimelineMedias(amount: Int = 5): Flow<String> {
+        println("Going to like $amount medias from user's timeline")
         val mediaIds = getTimelineMedias(amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
@@ -956,6 +957,7 @@ class InstagramBot(
      * Like provided numbers of media of provided user
      */
     suspend fun likeUserMedias(username: String, amount: Int = 5): Flow<String> {
+        println("Going to like $amount medias of $username")
         val mediaIds = getLastUserMedias(username, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
@@ -964,6 +966,7 @@ class InstagramBot(
      * Like provided numbers of media appears in explore tab of logged in user(self)
      */
     suspend fun likeExploreTabMedias(amount: Int): Flow<String> {
+        println("Going to like $amount medias from explore page")
         val mediaIds = getExploreTabMedias(amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
@@ -972,6 +975,7 @@ class InstagramBot(
      * Like provided numbers of media of provided hashtag
      */
     suspend fun likeHashTagMedias(hashTag: String, amount: Int = 5): Flow<String> {
+        println("Going to like $amount medias with having $hashTag hashtag")
         val mediaIds = getHashTagMedias(hashTag, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
@@ -980,6 +984,7 @@ class InstagramBot(
      * Like provided numbers of media of provided location
      */
     suspend fun likeLocationMedias(locationName: String, amount: Int = 5): Flow<String> {
+        println("Going to like $amount medias having $locationName location")
         val mediaIds = getMediasByLocation(locationName, amount).toList().map { it.get("pk").toString() }
         return likeMedias(mediaIds = mediaIds)
     }
@@ -1949,7 +1954,7 @@ class InstagramBot(
                 }
                 return false
             } else if (api.lastJSON?.read<String>("$.status") == "ok") {
-                println("Commented media - $mediaId")
+                println("Commented media - $mediaId with $commentText text")
                 totalActionPerformed["comments"] = totalActionPerformed["comments"]!!.plus(1)
                 if (blockedActionSleep && sleepingActions["comments"] == true) {
                     sleepingActions["comments"] = false
@@ -2035,6 +2040,7 @@ class InstagramBot(
      * Comment provided number of medias from explore page of logged in user(self) with provided comment text
      */
     suspend fun commentExploreTabMedias(commentList: List<String>, amountOfMedias: Int): Flow<String> {
+        println("Going to comment $amountOfMedias medias from explore page")
         val mediaIds = getExploreTabMedias(amountOfMedias).toList().map { it.get("pk").toString() }
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
@@ -2043,6 +2049,7 @@ class InstagramBot(
      * Comment provided number of hashtag medias with provided comment text
      */
     suspend fun commentHashTagMedias(hashTag: String, commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        println("Going to comment $amountOfMedias medias having $hashTag hashtag")
         val mediaIds = getHashTagMedias(hashTag, amountOfMedias).toList().map { it.get("pk").toString() }
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
@@ -2051,6 +2058,7 @@ class InstagramBot(
      * Comment provided number of medias of provided user with provided comment text
      */
     suspend fun commentUserMedias(username: String, commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        println("Going to comment $amountOfMedias medias of $username")
         val mediaIds = getLastUserMedias(username, amountOfMedias).toList().map { it.get("pk").toString() }
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
@@ -2063,6 +2071,7 @@ class InstagramBot(
             commentList: List<String>,
             amountOfMedias: Int = 5
     ): Flow<String> {
+        println("Going to comment $amountOfMedias medias having $locationName location")
         val mediaIds = getMediasByLocation(locationName, amountOfMedias).toList().map { it.get("pk").toString() }
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
@@ -2071,6 +2080,7 @@ class InstagramBot(
      * Comment provided number of medias from timeline of logged in user(self) with provided comment text
      */
     suspend fun commentTimelineMedias(commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
+        println("Going to comment $amountOfMedias medias from users timeline")
         val mediaIds = getTimelineMedias(amountOfMedias).toList().map { it.get("pk").toString() }
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }

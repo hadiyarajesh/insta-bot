@@ -160,12 +160,13 @@ object InstagramAPI {
             rankToken = "${userId}_$uuid"
 
             println("Logged in successfully")
-            loginFlow()
+            postLoginFlow()
         }
     }
 
     // Sync features after successful login
-    private fun loginFlow() {
+    private fun postLoginFlow() {
+        println("Initiating post login flow")
         syncLauncher(isLogin = false)
         syncUserFeatures()
         // Update feed and timeline
