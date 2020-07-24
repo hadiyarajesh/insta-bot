@@ -44,14 +44,14 @@ Initialize InstagramBot class with your username and password and call prepare m
     val password = "your_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 ```
 Now you can perform any operations of your choice. 
 ```
-bot.getExploreTabMedias(7).collect { println(it) }
-bot.likeHashTagMedias("cat", 5).collect { println(it) }
-bot.commentHashTagMedias("cat", "This is an exmaple of nice comment",5).collect { println(it) }
+bot.likeMediasByExplorePage(5).collect { println(it) }
+bot.commentMediasByHashTag("hashtag_name", listOf("Comment1", "Comment2"), 5).collect { println(it) }
+bot.watchLocationUsersStories("location_name", 200).collect { println(it) }
 ```
 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
