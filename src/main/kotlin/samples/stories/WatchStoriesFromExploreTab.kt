@@ -7,21 +7,16 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() = runBlocking {
+fun main() {
 
     val username = "your_instagram_username"
     val password = "your_instagram_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 
-    val howManyUsersYouWantToWatchStories = 10
-
-    val usersFromExploreTab = mutableListOf<String>()
-    bot.getExploreTabUsers(howManyUsersYouWantToWatchStories).collect {
-        usersFromExploreTab.add(it?.read<String>("$.username").toString())
+    runBlocking {
+        bot.watchExploreTabUsersStories().collect { println(it) }
     }
-
-    println(bot.watchUsersStories(usersFromExploreTab))
 }

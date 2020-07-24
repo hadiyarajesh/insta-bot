@@ -6,18 +6,20 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() = runBlocking {
+fun main() {
 
     val username = "your_instagram_username"
     val password = "your_instagram_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 
     val hashTagName = "enter_hashtag_name_here"
     val commentList = listOf("Comment 1", "Comment 2")
     val howManyMediasYouWantToComment = 10
 
-    bot.commentHashTagMedias(hashTagName, commentList, howManyMediasYouWantToComment).collect { println(it) }
+    runBlocking {
+        bot.commentMediasByHashTag(hashTagName, commentList, howManyMediasYouWantToComment).collect { println(it) }
+    }
 }

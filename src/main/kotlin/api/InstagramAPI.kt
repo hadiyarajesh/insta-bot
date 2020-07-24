@@ -127,7 +127,7 @@ object InstagramAPI {
     }
 
     // Login to Instagram
-    fun login(forceLogin: Boolean = false): Boolean {
+    fun login(username: String, password: String, forceLogin: Boolean = false): Boolean {
         if (!isLoggedIn || forceLogin) {
             preLoginFlow()
 
@@ -689,11 +689,6 @@ object InstagramAPI {
         return request.prepare(endpoint = Routes.userInfoById(userId = userId)).send()
     }
 
-    fun getUserIdByName(username: String): String {
-        request.prepare(endpoint = Routes.userInfoByName(username = username)).send()
-        return lastJSON?.read<JSONObject>("$.user")?.get("pk").toString()
-    }
-
     fun getUserTagMedias(userId: String): Boolean {
         return request.prepare(endpoint = Routes.userTags(userId = userId, rankToken = rankToken)).send()
     }
@@ -724,10 +719,6 @@ object InstagramAPI {
         ).send()
     }
 
-    fun getSelfUserFeed(maxId: String = "", minTimeStamp: String = ""): Boolean {
-        return getUserFeed(userId = userId, maxId = maxId, minTimeStamp = minTimeStamp)
-    }
-
     fun getHashTagFeed(hashTag: String, maxId: String = ""): Boolean {
         return request.prepare(endpoint = Routes.hashTagFeed(hashTag = hashTag, maxId = maxId, rankToken = rankToken))
             .send()
@@ -756,10 +747,6 @@ object InstagramAPI {
     private fun getUserFollowers(userId: String, maxId: String = ""): Boolean {
         return request.prepare(endpoint = Routes.userFollowers(userId = userId, maxId = maxId, rankToken = rankToken))
             .send()
-    }
-
-    private fun getSelfUserFollowers(): Boolean {
-        return getUserFollowers(userId)
     }
 
     private fun getUserFollowings(userId: String, maxId: String = ""): Boolean {
@@ -1074,10 +1061,6 @@ object InstagramAPI {
                 return@flow
             }
         }
-    }
-
-    fun getTotalUserFeed(userId: String, minTimeStamp: String = ""): Flow<JSONObject> {
-        return getLastUserFeed(userId = userId, amount = Int.MAX_VALUE, minTimeStamp = minTimeStamp)
     }
 
     fun getTotalHashTagMedia(hashTag: String, amount: Int = 10): Flow<JSONObject> = flow {

@@ -6,17 +6,19 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() = runBlocking {
+fun main() {
 
     val username = "your_instagram_username"
     val password = "your_instagram_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 
     val locationName = "enter_location_name_here"
     val howManyMediasYouWantToLike = 10
 
-    bot.likeLocationMedias(locationName, howManyMediasYouWantToLike).collect { println(it) }
+    runBlocking {
+        bot.likeMediasByLocation(locationName, howManyMediasYouWantToLike).collect { println(it) }
+    }
 }

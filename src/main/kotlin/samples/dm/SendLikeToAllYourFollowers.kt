@@ -8,16 +8,17 @@ import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() = runBlocking {
+fun main()  {
 
     val username = "your_instagram_username"
     val password = "your_instagram_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 
-    val yourFollowers = bot.getSelfFollowers(Int.MAX_VALUE, isUsername = true).toList()
-
-    bot.sendLikeToUsersIndividually(yourFollowers).collect { println(it) }
+    runBlocking {
+        val yourFollowers = bot.getSelfFollowers().toList()
+        bot.sendDirectLikeToUsers(yourFollowers).collect { println(it) }
+    }
 }

@@ -6,20 +6,22 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() = runBlocking {
+fun main() {
 
     val username = "your_instagram_username"
     val password = "your_instagram_password"
 
     val bot = InstagramBot()
-    bot.prepare(username, password)
-    bot.login()
+    bot.prepare(username)
+    bot.login(username, password)
 
     val user = "enter_username_here_whose_media_you_want_to_download"
     val howManyMediasYouWantToDownload = 10
     val doYouWantToSaveDescriptionOfMedias = false
 
-    bot.downloadUserMedias(user, howManyMediasYouWantToDownload, doYouWantToSaveDescriptionOfMedias).collect {
-        println(it)
+    runBlocking {
+        bot.downloadUserMedias(user, howManyMediasYouWantToDownload, doYouWantToSaveDescriptionOfMedias).collect {
+            println(it)
+        }
     }
 }

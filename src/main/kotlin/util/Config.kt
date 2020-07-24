@@ -6,12 +6,14 @@ import api.InstagramAPI
 Configuration file of the project
 */
 
+// Instagram Secret Key
 object KEY {
     const val SIG_KEY: String = "5f3e50f435583c9ae626302a71f7340044087a7e2c60adacfc254205a993e305"
     const val SIG_KEY_VERSION: String = "4"
     const val APP_VERSION: String = "105.0.0.18.119"
 }
 
+// HTTP HOST and HEADERS
 object HTTP {
     private const val HOST_NAME = "i.instagram.com"
     private const val HOST = "https://$HOST_NAME/"
@@ -38,7 +40,6 @@ object HTTP {
         "Content-type" to "application/x-www-form-urlencoded; charset=UTF-8",
         "Cookie2" to "\$Version=1"
     )
-
 }
 
 val USER_AGENT: String = "Instagram ${one_plus_7.instagram_version} " +
@@ -46,6 +47,40 @@ val USER_AGENT: String = "Instagram ${one_plus_7.instagram_version} " +
         "${one_plus_7.dpi}; ${one_plus_7.resolution}; ${one_plus_7.manufacturer}; " +
         "${one_plus_7.device}; ${one_plus_7.model}; ${one_plus_7.cpu}; en_US)"
 
+
+// File names
+object FILES {
+    const val DATA_DIRECTORY_NAME = "data"
+    const val MAX_ACTIONS_FILE = "max_actions.txt"
+    const val TOTAL_ACTIONS_FILE = "total_actions.txt"
+    const val BLOCK_ACTION_FILE = "block_action.txt"
+    const val LIKES_FILE = "likes.txt"
+    const val UNLIKES_FILE = "unlikes.txt"
+    const val COMMENTS_FILE = "comments.txt"
+    const val FOLLOWED_FILE = "followed.txt"
+    const val UNFOLLOWED_FILE = "unfollowed.txt"
+    const val BLOCKS_FILE = "blocks.txt"
+    const val UNBLOCKS_FILE = "unblocks.txt"
+    const val ARCHIVED_FILE = "archived.txt"
+    const val UNARCHIVED_FILE = "unarchived.txt"
+    const val MESSAGES_FILE = "messages.txt"
+    const val STORIES_FILE = "stories.txt"
+}
+
+// Action names
+object ACTIONS {
+    const val LIKES = "likes"
+    const val UNLIKES = "unlikes"
+    const val COMMENTS = "comments"
+    const val FOLLOWS = "follows"
+    const val UNFOLLOWS = "unfollows"
+    const val BLOCKS = "blocks"
+    const val UNBLOCKS = "unblocks"
+    const val MESSAGES = "messages"
+    const val ARCHIVED = "archived"
+    const val UNARCHIVED = "unarchived"
+    const val STORIES_VIEWED = "stories_viewed"
+}
 
 object EXPERIMENTS {
     const val EXPERIMENTS: String =
@@ -84,9 +119,8 @@ object EXPERIMENTS {
 }
 
 
-// Routing endpoints
+// API Endpoints
 object Routes {
-
     fun msisdnHeader() = "accounts/read_msisdn_header/"
 
     fun logAttribution() = "attribution/log_attribution/"
