@@ -1,12 +1,14 @@
 # Instabot
-Free Instagram bot implemented in Kotlin to perform all major operations supported by Instagram app.
+Instagram bot implemented in Kotlin to perform all major operations supported by Instagram app.
 
 ## Features
-- Like medias 
+- Like medias
 - Comment medias
 - Direct messages
-- Story viewing
+- Watch stories
 - Download medias
+- Hashtag targetting
+- Location targetting
 - And more...
 
 ## Built with
@@ -39,21 +41,12 @@ dependencies {
 
 ## Quick start
 Initialize InstagramBot class with your username and password and call prepare method. Then call login method to login into instagram. (Prepare method must be called before login)
-```
-    val username = "your_username"
-    val password = "your_password"
 
-    val bot = InstagramBot()
-    bot.prepare(username)
-    bot.login(username, password)
-```
+![start](https://user-images.githubusercontent.com/12107428/88461018-2189ab80-cebe-11ea-94cb-5ba368005fb5.png)
+
+
 Now you can perform any operations of your choice. 
-
-```
-bot.likeMediasByExplorePage(5).collect { println(it) }
-bot.commentMediasByHashTag("hashtag_name", listOf("Comment1", "Comment2"), 5).collect { println(it) }
-bot.watchLocationUsersStories("location_name", 200).collect { println(it) }
-```
+![main](https://user-images.githubusercontent.com/12107428/88461015-1f275180-cebe-11ea-9805-2be90a036ad8.png)
 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
 
