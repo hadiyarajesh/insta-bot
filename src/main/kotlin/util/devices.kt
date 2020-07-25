@@ -12,5 +12,3 @@ val samsung_galaxy_s9_plus = Device(
     "1440x2560", "samsung", "SM-G965F",
     "star2qltecs", "samsungexynos9810"
 )
-
-val DEFAULT_DEVICE: Device = one_plus_7

@@ -25,7 +25,7 @@ fun main() {
     val userList = listOf("username1", "username2")
 
     runBlocking {
-        // GEt your own followers
+        // Get your own followers
         bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
         // Get 100 followers of given username
         bot.getUserFollowers("user_name", 100, isUsername = true).collect { println(it) }

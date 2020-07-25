@@ -9,6 +9,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 import util.ACTIONS
 import util.FILES
+import util.ITEMTYPE
 import java.io.File
 import java.time.Instant
 import java.time.LocalDate
@@ -71,7 +72,7 @@ class InstagramBot {
     /**
      * Status code of last response
      */
-    val statusCode: Int
+    val lastStatusCode: Int
         get() = api.statusCode
 
     /**
@@ -206,7 +207,7 @@ class InstagramBot {
     }
 
     /**
-     * Initialize file containing total number of actions performed per day
+     * Initialize file containing total number of actions performed per day. It will reset on every day
      */
     private fun initializeTotalActionFile(totalActionFile: File, isForce: Boolean = false) {
         val lastModifiedDate =
@@ -231,7 +232,7 @@ class InstagramBot {
     }
 
     /**
-     * Initialize file containing whether actions is blocked or not
+     * Initialize file containing whether actions is blocked or not. It will reset on every day
      */
     private fun initializeBlockActionFile(blockActionFile: File, isForce: Boolean = false) {
         val lastModifiedDate =
@@ -313,8 +314,8 @@ class InstagramBot {
 
     //region Authentication methods
     /**
-     * Prepare the client before performing login
-     * @param username Username of instagram account to setup cookies file
+     * Prepare the api client before login
+     * @param username Username of instagram account
      */
     fun prepare(username: String) {
         api.username = username
@@ -322,10 +323,10 @@ class InstagramBot {
     }
 
     /**
-     * Login into instagram with given username/password and interactively handle all scenario of Two factor authentication code and/or login confirmation by showing options in prompt.
+     * Login to instagram with given username/password and interactively handle all scenarios of Two factor authentication code and/or challenge required and/or login confirmation by showing options in prompt.
      * @param username Username of instagram account
      * @param password Password of instagram account
-     * @return Boolean indicating login is successful or not
+     * @return Boolean indicating successfully logged in or not
      */
     fun login(username: String, password: String, forceLogin: Boolean = false): Boolean {
         api.password = password
@@ -334,7 +335,7 @@ class InstagramBot {
 
     /**
      * Logout from Instagram
-     * @return Boolean indicating login is successful or not
+     * @return Boolean indicating successfully logged out or not
      */
     fun logout(): Boolean {
         return api.logout()
@@ -346,17 +347,15 @@ class InstagramBot {
     /**
      * Set user(self) account as public
      */
-    fun setAccountPublic(): Boolean {
-        api.setAccountPublic()
-        return api.lastJSON?.read<JSONObject>("$.user")?.read<Boolean>("$.is_private") == false
+    fun setAccountsPublic(): Boolean {
+        return api.setAccountPublic()
     }
 
     /**
      * Set user(self) account as private
      */
     fun setAccountPrivate(): Boolean {
-        api.setAccountPrivate()
-        return api.lastJSON?.read<JSONObject>("$.user")?.read<Boolean>("$.is_private") == true
+        return api.setAccountPrivate()
     }
 
     /**
@@ -437,7 +436,7 @@ class InstagramBot {
     /**
      * Convert username to user id
      */
-    private inline fun convertToUserId(value: String): String {
+    private fun convertToUserId(value: String): String {
         return (if (value.toLongOrNull() != null) value else {
             getUserIdByName(value.replace("@", ""))
         }).toString()
@@ -461,7 +460,8 @@ class InstagramBot {
             isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false, fileNameToWrite: String = "",
             isOverwrite: Boolean = false
     ): Flow<String> {
-        println("Going to get followings of $username")
+        val amount = if(amountOfFollowing == Int.MAX_VALUE) "all" else amountOfFollowing.toString()
+        println("Going to get $amount followings of $username")
         return api.getTotalFollowing(
             userId,
             amountOfFollowing,
@@ -488,7 +488,8 @@ class InstagramBot {
             isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false, fileNameToWrite: String = "",
             isOverwrite: Boolean = false
     ): Flow<String> {
-        println("Going to get followers of $username")
+        val amount = if(amountOfFollowers == Int.MAX_VALUE) "all" else amountOfFollowers.toString()
+        println("Going to get $amount followers of $username")
         return api.getTotalFollowers(
             userId,
             amountOfFollowers,
@@ -516,7 +517,8 @@ class InstagramBot {
             isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false, fileNameToWrite: String = "",
             isOverwrite: Boolean = false
     ): Flow<String> {
-        println("Going to get followings of $username")
+        val amount = if(amountOfFollowing == Int.MAX_VALUE) "all" else amountOfFollowing.toString()
+        println("Going to get $amount followings of $username")
         return api.getTotalFollowing(
             convertToUserId(username),
             amountOfFollowing,
@@ -543,7 +545,8 @@ class InstagramBot {
             isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false, fileNameToWrite: String = "",
             isOverwrite: Boolean = false
     ): Flow<String> {
-        println("Going to get followers of $username")
+        val amount = if(amountOfFollowers == Int.MAX_VALUE) "all" else amountOfFollowers.toString()
+        println("Going to get $amount followers of $username")
         return api.getTotalFollowers(
             convertToUserId(username),
             amountOfFollowers,
@@ -630,7 +633,7 @@ class InstagramBot {
     /**
      * Get timeline medias of user(self)
      */
-    fun getMediasByTimeline(amountOfMedias: Int = 8): Flow<JSONObject> = flow {
+    fun getMediasByTimeline(amountOfMedias: Int = 5): Flow<JSONObject> = flow {
         var counter = 0
         var nextMaxId = ""
 
@@ -658,7 +661,7 @@ class InstagramBot {
     /**
      * Get given number of medias liked user(self)
      */
-    fun getLikedMedias(amountOfMedias: Int): Flow<JSONObject> {
+    fun getLikedMedias(amountOfMedias: Int = Int.MAX_VALUE): Flow<JSONObject> {
         return api.getTotalLikedMedia(amountOfMedias)
     }
 
@@ -689,7 +692,7 @@ class InstagramBot {
     /**
      * Get given number of medias of given hashtag
      */
-    fun getMediasByHashTag(hashTag: String, amountOfMedias: Int): Flow<JSONObject> {
+    fun getMediasByHashTag(hashTag: String, amountOfMedias: Int = 5): Flow<JSONObject> {
         return api.getTotalHashTagMedia(hashTag, amountOfMedias)
     }
 
@@ -755,7 +758,7 @@ class InstagramBot {
     /**
      * Get given number of comments of given media
      */
-    fun getMediaComments(mediaId: String, amountOfMedias: Int = 5): Flow<JSONObject> = flow {
+    fun getMediaComments(mediaId: String, amountOfComments: Int = 5): Flow<JSONObject> = flow {
         var counter = 0
         var nextMaxId = ""
 
@@ -764,7 +767,7 @@ class InstagramBot {
                 api.lastJSON?.read<JSONArray>("$.comments")?.forEach {
                     emit(it as JSONObject)
                     counter += 1
-                    if (counter >= amountOfMedias) {
+                    if (counter >= amountOfComments) {
                         return@flow
                     }
                 }
@@ -1127,7 +1130,7 @@ class InstagramBot {
     }
 
     /**
-     * Perform like action on given type of media
+     * Like given amount of medias
      */
     private fun likeMedias(
             mediaIds: List<String>, username: String = "", userId: String = "",
@@ -1152,43 +1155,43 @@ class InstagramBot {
     }
 
     /**
-     * Like given numbers of medias appear on timeline of user(self)
+     * Like given amount of medias appeared on timeline of user(self)
      */
     suspend fun likeMediasByTimeline(amountOfMedias: Int = 5): Flow<String> {
         println("Going to like $amountOfMedias medias from user's timeline")
-        val mediaIds = getMediasByTimeline(amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByTimeline(amountOfMedias).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Like given numbers of media of given user
+     * Like given amount of medias of given user
      */
     suspend fun likeMediasByUser(username: String, amountOfMedias: Int = 5): Flow<String> {
         println("Going to like $amountOfMedias medias of $username")
-        val mediaIds = getMediasByUser(username, amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByUser(username, amountOfMedias).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Like given numbers of media appears in explore tab of user(self)
+     * Like given amount of medias appeared in explore page of user(self)
      */
     suspend fun likeMediasByExplorePage(amountOfMedias: Int): Flow<String> {
         println("Going to like $amountOfMedias medias from explore page")
-        val mediaIds = getMediasByExplorePage(amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByExplorePage(amountOfMedias).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Like given numbers of media of given hashtag
+     * Like given amount of medias having given hashtag
      */
     suspend fun likeMediasByHashTag(hashTag: String, amountOfMedias: Int = 5): Flow<String> {
         println("Going to like $amountOfMedias medias with having $hashTag hashtag")
-        val mediaIds = getMediasByHashTag(hashTag, amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByHashTag(hashTag, amountOfMedias).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Like given numbers of media of given location
+     * Like given amount of medias having given location
      */
     suspend fun likeMediasByLocation(
             locationName: String,
@@ -1197,12 +1200,12 @@ class InstagramBot {
     ): Flow<String> {
         println("Going to like $amountOfMedias medias having $locationName location")
         val mediaIds =
-            getMediasByLocation(locationName, amountOfMedias, amountOfLocation).toList().map { it.get("pk").toString() }
+            getMediasByLocation(locationName, amountOfMedias, amountOfLocation).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Like given numbers of media of followers of given user
+     * Like given amount of medias of followers of given user
      */
     suspend fun likeMediasByUserFollowers(
             username: String,
@@ -1222,7 +1225,7 @@ class InstagramBot {
     }
 
     /**
-     * Like given numbers of media of following of given user
+     * Like given amount of medias of followings of given user
      */
     suspend fun likeMediasByUserFollowing(
             username: String,
@@ -1242,7 +1245,7 @@ class InstagramBot {
     }
 
     /**
-     * Like given comment
+     * Generic method to perform like action on given comment
      */
     suspend fun likeComment(commentId: String): Boolean {
         sleepTimeInMillis = Random.nextInt(minSleepTime, maxSleepTime)
@@ -1272,7 +1275,7 @@ class InstagramBot {
     }
 
     /**
-     * Like given number of comments of given media
+     * Like given amount of comments of given media
      */
     suspend fun likeMediaComments(mediaId: String, amount: Int = 5): Flow<String> = flow {
         getMediaComments(mediaId, amount).toList().forEach {
@@ -1318,7 +1321,7 @@ class InstagramBot {
     }
 
     /**
-     * Unlike(previously liked) medias
+     * Unlike(previously liked) given amount of medias
      */
     fun unlikeMedias(mediaIds: List<String>): Flow<String> = flow {
         mediaIds.forEach {
@@ -1334,15 +1337,15 @@ class InstagramBot {
     }
 
     /**
-     * Unlike(previously liked) given number of medias of given user
+     * Unlike(previously liked) given amount of medias of given user
      */
     suspend fun unlikeUserMedias(username: String, amount: Int = 5): Flow<String> {
-        val mediaIds = getMediasByUser(username, amount).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByUser(username, amount).map { it.get("pk").toString() }.toList()
         return likeMedias(mediaIds = mediaIds)
     }
 
     /**
-     * Unlike(previously liked) given media comment
+     * Generic method to perform Unlike action on given comment
      */
     suspend fun unlikeComment(commentId: String): Boolean {
         api.unlikeComment(commentId)
@@ -1365,7 +1368,7 @@ class InstagramBot {
     }
 
     /**
-     * Unlike(previously liked) comment of given media
+     * Unlike(previously liked) comments of given media
      */
     fun unlikeMediaComments(mediaId: String): Flow<String> = flow {
         getMediaComments(mediaId, 10).toList().forEach {
@@ -1390,7 +1393,7 @@ class InstagramBot {
      * Check whether media is commented by user(self) or not
      */
     private suspend fun isMediaCommented(mediaId: String): Boolean {
-        return getMediaCommenters(mediaId, Int.MAX_VALUE).toList().map { it?.read<String>("$.username") }
+        return getMediaCommenters(mediaId).map { it.get("username").toString() }.toList()
             .contains(this.username)
     }
 
@@ -1429,7 +1432,7 @@ class InstagramBot {
     }
 
     /**
-     * Reply to given comment of given media
+     * Generic method to perform reply on given comment of given media
      */
     suspend fun replyToComment(mediaId: String, parentCommentId: String, commentText: String): Boolean {
         if (!isMediaCommented(mediaId)) {
@@ -1477,7 +1480,7 @@ class InstagramBot {
     }
 
     /**
-     * Comment given medias with given comment text
+     * Comment given amount of medias with given comment text
      */
     fun commentMedias(mediaIds: List<String>, commentList: List<String>): Flow<String> = flow {
         mediaIds.forEach {
@@ -1494,25 +1497,25 @@ class InstagramBot {
     }
 
     /**
-     * Comment given number of medias from timeline of user(self) with given comment text
+     * Comment given amount of medias from timeline of user(self) with given comment text
      */
     suspend fun commentMediasByTimeline(commentList: List<String>, amountOfMedias: Int = 5): Flow<String> {
         println("Going to comment $amountOfMedias medias from users timeline")
-        val mediaIds = getMediasByTimeline(amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByTimeline(amountOfMedias).map { it.get("pk").toString() }.toList()
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
-     * Comment given number of medias from explore page of user(self) with given comment text
+     * Comment given amount of medias from explore page of user(self) with given comment text
      */
     suspend fun commentMediasByExplorePage(commentList: List<String>, amountOfMedias: Int): Flow<String> {
         println("Going to comment $amountOfMedias medias from explore page")
-        val mediaIds = getMediasByExplorePage(amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByExplorePage(amountOfMedias).map { it.get("pk").toString() }.toList()
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
-     * Comment given number of hashtag medias with given comment text
+     * Comment given amount of hashtag medias with given comment text
      */
     suspend fun commentMediasByHashTag(
             hashTag: String,
@@ -1520,12 +1523,12 @@ class InstagramBot {
             amountOfMedias: Int = 5
     ): Flow<String> {
         println("Going to comment $amountOfMedias medias having $hashTag hashtag")
-        val mediaIds = getMediasByHashTag(hashTag, amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByHashTag(hashTag, amountOfMedias).map { it.get("pk").toString() }.toList()
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
-     * Comment given number of medias of given user with given comment text
+     * Comment given amount of medias of given user with given comment text
      */
     suspend fun commentMediasByUser(
             username: String,
@@ -1533,12 +1536,12 @@ class InstagramBot {
             amountOfMedias: Int = 5
     ): Flow<String> {
         println("Going to comment $amountOfMedias medias of $username")
-        val mediaIds = getMediasByUser(username, amountOfMedias).toList().map { it.get("pk").toString() }
+        val mediaIds = getMediasByUser(username, amountOfMedias).map { it.get("pk").toString() }.toList()
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
 
     /**
-     * Comment given number of medias of given location with given comment text
+     * Comment given amount of medias of given location with given comment text
      */
     suspend fun commentMediasByLocation(
             locationName: String,
@@ -1548,7 +1551,7 @@ class InstagramBot {
     ): Flow<String> {
         println("Going to comment $amountOfMedias medias having $locationName location")
         val mediaIds =
-            getMediasByLocation(locationName, amountOfMedias, amountOfLocation).toList().map { it.get("pk").toString() }
+            getMediasByLocation(locationName, amountOfMedias, amountOfLocation).map { it.get("pk").toString() }.toList()
         return commentMedias(mediaIds = mediaIds, commentList = commentList)
     }
     //endregion
@@ -1586,7 +1589,7 @@ class InstagramBot {
     }
 
     /**
-     * Follow given number of users
+     * Follow given amount of users
      */
     fun followUsers(usernames: List<String>): Flow<String> = flow {
         usernames.forEach {
@@ -1602,11 +1605,11 @@ class InstagramBot {
     }
 
     /**
-     * Follow given number of followers of given user
+     * Follow given amount of followers of given user
      */
     suspend fun followUserFollowers(
-            username: String, amountOfFollowers: Int = Int.MAX_VALUE,
-            isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false
+            username: String, amountOfFollowers: Int, isFilterPrivate: Boolean = false,
+            isFilterVerified: Boolean = false
     ): Flow<String> {
         val followers = getUserFollowers(
             username = username, amountOfFollowers = amountOfFollowers,
@@ -1617,11 +1620,11 @@ class InstagramBot {
     }
 
     /**
-     * Follow given number of following of given user
+     * Follow given amount of following of given user
      */
     suspend fun followUserFollowing(
-            username: String, amountOfFollowing: Int = Int.MAX_VALUE,
-            isFilterPrivate: Boolean = false, isFilterVerified: Boolean = false
+            username: String, amountOfFollowing: Int, isFilterPrivate: Boolean = false,
+            isFilterVerified: Boolean = false
     ): Flow<String> {
         val following = getUserFollowing(
             username = username, amountOfFollowing = amountOfFollowing,
@@ -1631,14 +1634,21 @@ class InstagramBot {
         return followUsers(following)
     }
 
+    /**
+     * Follow given amount of users appeared on explore page of user(self)
+     */
     suspend fun followExploreTabUsers(amountOfUsers: Int): Flow<String> {
-        val users = getUsersByExplorePage(amountOfUsers).toList().map { it.get("pk").toString() }
+        val users = getUsersByExplorePage(amountOfUsers).map { it.get("pk").toString() }.toList()
         return followUsers(users)
     }
 
+    /**
+     * Follow given amount of users having given location
+     */
     suspend fun followUsersByLocation(locationName: String, amountOfUsers: Int): Flow<String> {
-        val users = getUsersByLocation(locationName = locationName, amountOfUsers = amountOfUsers).toList()
-            .map { it.get("pk").toString() }
+        val users = getUsersByLocation(locationName = locationName, amountOfUsers = amountOfUsers)
+            .map { it.get("pk").toString() }.toList()
+
         return followUsers(users)
     }
 
@@ -1673,7 +1683,7 @@ class InstagramBot {
     }
 
     /**
-     * Unfollow given number of users
+     * Unfollow(previously followed) given amount of users
      */
     fun unfollowUsers(usernames: List<String>): Flow<String> = flow {
         usernames.forEach {
@@ -1700,7 +1710,7 @@ class InstagramBot {
 
     //region Direct messaging (DM) related methods
     /**
-     * Private method to extract url from string
+     * Extract url from given string
      */
     private fun extractURL(text: String): String {
         val pattern =
@@ -1710,7 +1720,7 @@ class InstagramBot {
     }
 
     /**
-     * Get inbox (Direct messages) of user(self)
+     * Get inbox(direct messages) of user(self)
      */
     fun getInbox(): Flow<JSONObject> = flow {
         api.getInboxV2()
@@ -1790,11 +1800,12 @@ class InstagramBot {
     }
 
     /**
-     * Send direct messages to users (List of single user will send message to one specified user,
-     * list of multiple users will create group and send message to them)
+     * Generic method to send direct message (dm) action
+     * List of single user will send message to given user,
+     * List of multiple users will create group and send message to group)
      */
     private suspend fun sendDirectMessage(
-            itemType: String, usernames: List<String>, text: String? = null,
+            itemType: ITEMTYPE, usernames: List<String>, text: String? = null,
             mediaId: String? = null, hashTag: String? = null, profileId: String? = null,
             filePath: String? = null, threadId: String = ""
     ): Boolean {
@@ -1803,7 +1814,7 @@ class InstagramBot {
         delay(sleepTimeInMillis * 1000L)
 
         when (itemType) {
-            "text" -> {
+            ITEMTYPE.TEXT -> {
                 val urls = extractURL(text!!)
                 val type = if (urls != "[]") "link" else "text"
 
@@ -1813,7 +1824,7 @@ class InstagramBot {
                 )
             }
 
-            "media" -> {
+            ITEMTYPE.MEDIA -> {
                 val media = getMediaInfo(mediaId!!)
                 val mediaTye = media?.get("media_type").toString()
                 val mediaID = media?.get("id").toString()
@@ -1827,28 +1838,28 @@ class InstagramBot {
                 )
             }
 
-            "hashtag" -> {
+            ITEMTYPE.HASHTAG -> {
                 api.sendDirectItem(
                     itemType = "hashtag", users = usernames.map { convertToUserId(it) },
                     options = mapOf("text" to text!!, "threadId" to threadId, "hashtag" to hashTag!!)
                 )
             }
 
-            "profile" -> {
+            ITEMTYPE.PROFILE -> {
                 api.sendDirectItem(
                     itemType = "profile", users = usernames.map { convertToUserId(it) },
                     options = mapOf("text" to text!!, "threadId" to threadId, "profile_user_id" to profileId!!)
                 )
             }
 
-            "like" -> {
+            ITEMTYPE.LIKE -> {
                 api.sendDirectItem(
                     itemType = "like", users = usernames.map { convertToUserId(it) },
                     options = mapOf("threadId" to threadId)
                 )
             }
 
-            "photo" -> {
+            ITEMTYPE.PHOTO -> {
                 api.sendDirectItem(
                     itemType = "photo", users = usernames.map { convertToUserId(it) },
                     options = mapOf("filePath" to filePath!!, "threadId" to threadId)
@@ -1887,7 +1898,7 @@ class InstagramBot {
             if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                 return@flow
             }
-            if (sendDirectMessage(itemType = "text", usernames = usernames, text = text)) {
+            if (sendDirectMessage(itemType = ITEMTYPE.TEXT, usernames = usernames, text = text)) {
                 emit(usernames.joinToString(" "))
             } else {
                 return@flow
@@ -1897,7 +1908,7 @@ class InstagramBot {
                 if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                     return@flow
                 }
-                if (sendDirectMessage(itemType = "text", usernames = listOf(it), text = text)) {
+                if (sendDirectMessage(itemType = ITEMTYPE.TEXT, usernames = listOf(it), text = text)) {
                     emit(it)
                 } else {
                     return@flow
@@ -1919,7 +1930,7 @@ class InstagramBot {
             if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                 return@flow
             }
-            if (sendDirectMessage(itemType = "media", usernames = usernames, text = text, mediaId = mediaId)) {
+            if (sendDirectMessage(itemType = ITEMTYPE.MEDIA, usernames = usernames, text = text, mediaId = mediaId)) {
                 emit(usernames.joinToString(" "))
             } else {
                 return@flow
@@ -1929,7 +1940,7 @@ class InstagramBot {
                 if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                     return@flow
                 }
-                if (sendDirectMessage(itemType = "media", usernames = listOf(it), text = text, mediaId = mediaId)) {
+                if (sendDirectMessage(itemType = ITEMTYPE.MEDIA, usernames = listOf(it), text = text, mediaId = mediaId)) {
                     emit(it)
                 } else {
                     return@flow
@@ -1952,7 +1963,7 @@ class InstagramBot {
             if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                 return@flow
             }
-            if (sendDirectMessage(itemType = "hashtag", usernames = usernames, text = text, hashTag = hashTag)) {
+            if (sendDirectMessage(itemType = ITEMTYPE.HASHTAG, usernames = usernames, text = text, hashTag = hashTag)) {
                 emit(usernames.joinToString(" "))
             } else {
                 return@flow
@@ -1962,7 +1973,7 @@ class InstagramBot {
                 if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                     return@flow
                 }
-                if (sendDirectMessage(itemType = "hashtag", usernames = listOf(it), text = text, hashTag = hashTag)) {
+                if (sendDirectMessage(itemType = ITEMTYPE.HASHTAG, usernames = listOf(it), text = text, hashTag = hashTag)) {
                     emit(it)
                 } else {
                     return@flow
@@ -1984,7 +1995,7 @@ class InstagramBot {
             if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                 return@flow
             }
-            if (sendDirectMessage(itemType = "profile", usernames = usernames, text = text, profileId = profileId)) {
+            if (sendDirectMessage(itemType = ITEMTYPE.PROFILE, usernames = usernames, text = text, profileId = profileId)) {
                 emit(usernames.joinToString(" "))
             } else {
                 return@flow
@@ -1995,7 +2006,7 @@ class InstagramBot {
                     return@flow
                 }
                 if (sendDirectMessage(
-                            itemType = "profile",
+                            itemType = ITEMTYPE.PROFILE,
                             usernames = listOf(it),
                             text = text,
                             profileId = profileId
@@ -2017,7 +2028,7 @@ class InstagramBot {
             if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                 return@flow
             }
-            if (sendDirectMessage(itemType = "like", usernames = usernames)) {
+            if (sendDirectMessage(itemType = ITEMTYPE.LIKE, usernames = usernames)) {
                 emit(usernames.joinToString(" "))
             } else {
                 return@flow
@@ -2027,7 +2038,7 @@ class InstagramBot {
                 if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                     return@flow
                 }
-                if (sendDirectMessage(itemType = "like", usernames = listOf(it))) {
+                if (sendDirectMessage(itemType = ITEMTYPE.LIKE, usernames = listOf(it))) {
                     emit(it)
                 } else {
                     return@flow
@@ -2046,7 +2057,7 @@ class InstagramBot {
                 if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                     return@flow
                 }
-                if (sendDirectMessage(itemType = "photo", usernames = usernames, filePath = filePath)) {
+                if (sendDirectMessage(itemType = ITEMTYPE.PHOTO, usernames = usernames, filePath = filePath)) {
                     emit(usernames.joinToString(" "))
                 } else {
                     return@flow
@@ -2056,7 +2067,7 @@ class InstagramBot {
                     if (blockedAction(ACTIONS.MESSAGES) || reachedLimit(ACTIONS.MESSAGES)) {
                         return@flow
                     }
-                    if (sendDirectMessage(itemType = "photo", usernames = listOf(it), filePath = filePath)) {
+                    if (sendDirectMessage(itemType = ITEMTYPE.PHOTO, usernames = listOf(it), filePath = filePath)) {
                         emit(it)
                     } else {
                         return@flow
@@ -2138,7 +2149,7 @@ class InstagramBot {
     }
 
     /**
-     * Un-block given users
+     * Un-block(previously blocked) given users
      */
     fun unblockUsers(usernames: List<String>): Flow<String> = flow {
         usernames.forEach {
@@ -2157,7 +2168,7 @@ class InstagramBot {
 
     //region Archive/Unarchive related methods
     /**
-     * Generic method to archive given media
+     * Generic method to perform archive(save media to collection) action
      */
     private fun archive(mediaId: String, undo: Boolean = false): Boolean {
         val media = getMediaInfo(mediaId)
@@ -2190,7 +2201,7 @@ class InstagramBot {
     }
 
     /**
-     * Un-archive given medias
+     * Generic method to perform Un-archive(unsave media from collection) action
      */
     fun unArchiveMedias(mediaIds: List<String>): Flow<String> = flow {
         mediaIds.forEach {
@@ -2258,9 +2269,9 @@ class InstagramBot {
 
     //region Delete Media/Comment related methods
     /**
-     * Delete given media
+     * Delete media by given media id
      */
-    fun deleteMedia(mediaId: String): Boolean {
+    private fun deleteMedia(mediaId: String): Boolean {
         return api.deleteMedia(mediaId)
     }
 
@@ -2278,7 +2289,7 @@ class InstagramBot {
     }
 
     /**
-     * Delete given comment of given media
+     * Delete comment by given comment of given media
      */
     fun deleteComment(mediaId: String, commentId: String): Boolean {
         return api.deleteComment(mediaId, commentId)
@@ -2292,7 +2303,7 @@ class InstagramBot {
      * It will return 3 values.
      * URL of media
      * Caption of media
-     * Boolean that is true if media is photo, false if it's video
+     * Boolean indicating media is photo or video. true if media is photo, false if it's video
      */
     private fun getMediaURLAndDescription(
             mediaId: String,
@@ -2339,7 +2350,7 @@ class InstagramBot {
     }
 
     /**
-     * Generic method to download specified media (story, photo, video)
+     * Generic method to download given media (story, photo, video)
      */
     suspend fun downloadMedia(url: String, username: String, folderName: String, fileName: String): Boolean {
         return withContext(Dispatchers.IO) {
@@ -2431,7 +2442,7 @@ class InstagramBot {
     }
 
     /**
-     * Get all items about stories of given users individually
+     * Get all items of stories of given users individually
      */
     fun getUsersStoriesItems(usernames: List<String>): Flow<JSONObject> = flow {
         getUsersStories(usernames).collect {
@@ -2454,7 +2465,8 @@ class InstagramBot {
     }
 
     /**
-     * Watch stories of given users
+     * Generic method to watch stories of given users
+     * It will use randomly generated amount of users in each iteration to limit getting amount of stories
      */
     suspend fun watchUsersStories(usernames: List<String>): Flow<Int> = flow {
         val numberOfUsersInSingleIteration = Random.nextInt(20, 30)
@@ -2501,7 +2513,7 @@ class InstagramBot {
     }
 
     /**
-     * Watch stories of users whose media appeared in given location
+     * Watch stories of users having given location
      */
     suspend fun watchLocationUsersStories(
             locationName: String,
@@ -2517,7 +2529,7 @@ class InstagramBot {
 
     //region Miscellaneous methods
     /**
-     * Get list of locations matches to given location name
+     * Get list of locations matches to given location
      */
     private fun searchLocations(locationName: String, amount: Int = 5): Flow<JSONObject> = flow {
         api.searchLocations(locationName, amount)
