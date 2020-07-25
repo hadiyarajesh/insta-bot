@@ -7,8 +7,8 @@ Instagram bot implemented in Kotlin to perform all major operations supported by
 - Direct messages
 - Watch stories
 - Download medias
-- Hashtag targetting
-- Location targetting
+- Hashtag targeting
+- Location targeting
 - And more...
 
 ## Built with
