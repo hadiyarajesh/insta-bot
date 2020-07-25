@@ -30,7 +30,7 @@ allprojects {
 }
 ```
 
-Add Gradle dependency as 
+Add Gradle dependency to your build.gradle file
 ```
 dependencies {
     implementation 'com.github.hadiyarajesh:insta-bot:1.0.0'
@@ -48,6 +48,7 @@ Initialize InstagramBot class with your username and password and call prepare m
     bot.login(username, password)
 ```
 Now you can perform any operations of your choice. 
+
 ```
 bot.likeMediasByExplorePage(5).collect { println(it) }
 bot.commentMediasByHashTag("hashtag_name", listOf("Comment1", "Comment2"), 5).collect { println(it) }
@@ -60,7 +61,7 @@ For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/
 [You can find ready to use sample scripts here](https://github.com/hadiyarajesh/insta-bot/tree/master/src/main/kotlin/samples)
 
 ## Documentation
-[You can find documentation here](https://hadiyarajesh.github.io/quick-start.html)
+[You can find documentation here](https://hadiyarajesh.github.io/docs/index.html)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
