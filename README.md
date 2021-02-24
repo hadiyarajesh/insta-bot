@@ -23,7 +23,7 @@ Instagram bot implemented in Kotlin to perform all major operations supported by
 ## Installation
 
 Add JitPack to your build.gradle.kts file
-```kotlin
+```
 repositories {
     ...
     maven(url = "https://jitpack.io")
@@ -31,7 +31,7 @@ repositories {
 ```
 
 Add Gradle dependency to your build.gradle.kts file
-```kotlin
+```
 dependencies {
     implementation("com.github.hadiyarajesh:insta-bot:Tag")
 }
