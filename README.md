@@ -22,33 +22,31 @@ Instagram bot implemented in Kotlin to perform all major operations supported by
 
 ## Installation
 
-Add JitPack to your build.gradle file
+Add JitPack to your build.gradle.kts file
 ```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
+repositories {
+    ...
+    maven(url = "https://jitpack.io")
 }
 ```
 
-Add Gradle dependency to your build.gradle file
+Add Gradle dependency to your build.gradle.kts file
 ```
 dependencies {
-    implementation 'com.github.hadiyarajesh:insta-bot:Tag'
+    implementation("com.github.hadiyarajesh:insta-bot:Tag")
 }
 ```
 
 ## Quick start
 Set your Instagram username and password in [Credentials.Kt](https://github.com/hadiyarajesh/insta-bot/blob/master/src/main/kotlin/Credentials.kt) file
-```
+```kotlin
 object Credentials {
     const val USERNAME = "your_instagram_username"
     const val PASSWORD = "your_instagram_password"
 }
 ```
 Initialize InstagramBot class with credential value and call prepare method. Then, call login method to login into instagram. (Prepare method must be called before login method)
-```
+```kotlin
     val username = Credentials.USERNAME
     val password = Credentials.PASSWORD
 
@@ -58,9 +56,9 @@ Initialize InstagramBot class with credential value and call prepare method. The
  ```
 
 Now you can perform any operations of your choice like. 
-```
-// Get your own followers
-bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
+```kotlin
+// Get 100 followers of you
+bot.getSelfFollowers(100).collect { println(it) }
 // Like 5 medias from explore page
 bot.likeMediasByExplorePage(5).collect { println(it) }
 // Approve all pending follow requests
@@ -75,7 +73,7 @@ For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/
 [You can find ready to use sample scripts here](https://github.com/hadiyarajesh/insta-bot/tree/master/src/main/kotlin/samples)
 
 ## Documentation
-[You can find documentation here](https://hadiyarajesh.github.io/docs/index.html)
+[You can find documentation here](https://hadiyarajesh.github.io/docs/instagram-api/index.html)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
