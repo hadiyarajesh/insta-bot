@@ -1,15 +1,16 @@
 package samples.like
 
+import Credentials
 import bot.InstagramBot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() {
+fun main() = runBlocking {
 
-    val username = "your_instagram_username"
-    val password = "your_instagram_password"
+    val username = Credentials.USERNAME
+    val password = Credentials.PASSWORD
 
     val bot = InstagramBot()
     bot.prepare(username)
@@ -17,7 +18,5 @@ fun main() {
 
     val howManyMediasYouWantToLike = 10
 
-    runBlocking {
-        bot.likeMediasByExplorePage(howManyMediasYouWantToLike).collect { println(it) }
-    }
+    bot.likeMediasByExplorePage(howManyMediasYouWantToLike).collect { println(it) }
 }

@@ -22,6 +22,7 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 object InstagramAPI {
     var username: String = "username"
@@ -144,6 +145,7 @@ object InstagramAPI {
                 return true
             } else {
                 println("Username or password is incorrect.")
+                exitProcess(1)
             }
         }
         return false

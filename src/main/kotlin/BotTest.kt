@@ -1,45 +1,47 @@
 import bot.InstagramBot
-import kotlinx.coroutines.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.runBlocking
 
 @InternalCoroutinesApi
 @ExperimentalCoroutinesApi
-fun main() {
+fun main() = runBlocking {
 
-    val username = "your_instagram_username"
-    val password = "your_instagram_password"
+    val username = Credentials.USERNAME
+    val password = Credentials.PASSWORD
 
     val bot = InstagramBot()
     bot.prepare(username)
     bot.login(username, password)
 
     /**
-     * Minimum and maximum time to sleep before performing next action.
+     * Minimum and maximum time (in seconds) to wait before performing next action.
      * Actual time will be randomly generated each time between min and max time
      */
 
-    bot.minSleepTime = 100
-    bot.maxSleepTime = 200
+    bot.minSleepTime = 150
+    bot.maxSleepTime = 300
 
+    // Provide your comment list here
     val commentsList = listOf("Sample comment 1", "Sample comment 2")
-    val userList = listOf("username1", "username2")
+    // Provide your username list here
+    val userList = listOf("user_name_1", "user_name_2")
 
-    runBlocking {
-        // Get your own followers
-        bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
-        // Get 100 followers of given username
-        bot.getUserFollowers("user_name", 100, isUsername = true).collect { println(it) }
-        // Like 5 medias from explore page
-        bot.likeMediasByExplorePage(5).collect { println(it) }
-        // Comment 5 medias having given hashtag and given comment list
-        bot.commentMediasByHashTag("hashtag_name", commentsList, 5).collect { println(it) }
-        // Follow given list of users
-        bot.followUsers(userList).collect { println(it) }
-        // Approve all pending follow requests
-        bot.approveAllPendingFollowRequests().collect { println(it) }
-        // Watch stories of 200 users based on given location
-        bot.watchLocationUsersStories("location_name", 200).collect { println(it) }
-        // Download latest 5 medias of given username along with caption
-        bot.downloadUserMedias("user_name", 5, true).collect { println(it) }
-    }
+    // Get your own followers
+    bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
+    // Get 100 followers of given username
+    bot.getUserFollowers("enter_user_name_here", 100, isUsername = true).collect { println(it) }
+    // Like 5 medias from explore page
+    bot.likeMediasByExplorePage(5).collect { println(it) }
+    // Comment 5 medias having given hashtag and given comment list
+    bot.commentMediasByHashTag("enter_hashtag_name_here", commentsList, 5).collect { println(it) }
+    // Follow given list of users
+    bot.followUsers(userList).collect { println(it) }
+    // Approve all pending follow requests
+    bot.approveAllPendingFollowRequests().collect { println(it) }
+    // Watch stories of 200 users based on given location
+    bot.watchLocationUsersStories("enter_location_name_here", 200).collect { println(it) }
+    // Download latest 5 medias of given user along with caption
+    bot.downloadUserMedias("enter_user_name_here", 5, true).collect { println(it) }
 }

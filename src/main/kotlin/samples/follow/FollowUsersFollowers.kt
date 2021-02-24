@@ -1,15 +1,16 @@
 package samples.follow
 
+import Credentials
 import bot.InstagramBot
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
-fun main() {
+fun main() = runBlocking {
 
-    val username = "your_instagram_username"
-    val password = "your_instagram_password"
+    val username = Credentials.USERNAME
+    val password = Credentials.PASSWORD
 
     val bot = InstagramBot()
     bot.prepare(username)
@@ -18,7 +19,5 @@ fun main() {
     val user = "enter_username_whose_followers_you_want_to_follow_here"
     val howManyFollowersYouWantToFollow = 10
 
-    runBlocking {
-        bot.followUserFollowers(user, howManyFollowersYouWantToFollow).collect { println(it) }
-    }
+    bot.followUserFollowers(user, howManyFollowersYouWantToFollow).collect { println(it) }
 }

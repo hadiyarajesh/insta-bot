@@ -42,10 +42,10 @@ object HTTP {
     )
 }
 
-val USER_AGENT: String = "Instagram ${one_plus_7.instagram_version} " +
-        "Android (${one_plus_7.android_version}/${one_plus_7.android_release}; " +
-        "${one_plus_7.dpi}; ${one_plus_7.resolution}; ${one_plus_7.manufacturer}; " +
-        "${one_plus_7.device}; ${one_plus_7.model}; ${one_plus_7.cpu}; en_US)"
+val USER_AGENT: String = "Instagram ${Devices.DEFAULT_DEVICE.instagramVersion} " +
+        "Android (${Devices.DEFAULT_DEVICE.androidVersion}/${Devices.DEFAULT_DEVICE.androidRelease}; " +
+        "${Devices.DEFAULT_DEVICE.dpi}; ${Devices.DEFAULT_DEVICE.resolution}; ${Devices.DEFAULT_DEVICE.manufacturer}; " +
+        "${Devices.DEFAULT_DEVICE.device}; ${Devices.DEFAULT_DEVICE.model}; ${Devices.DEFAULT_DEVICE.cpu}; en_US)"
 
 
 // File names
