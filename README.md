@@ -30,7 +30,7 @@ repositories {
 }
 ```
 
-Add Gradle dependency to your build.gradle file
+Add Gradle dependency to your build.gradle.kts file
 ```kotlin
 dependencies {
     implementation("com.github.hadiyarajesh:insta-bot:Tag")
