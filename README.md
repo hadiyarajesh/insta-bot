@@ -75,7 +75,7 @@ For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/
 [You can find ready to use sample scripts here](https://github.com/hadiyarajesh/insta-bot/tree/master/src/main/kotlin/samples)
 
 ## Documentation
-[You can find documentation here](https://hadiyarajesh.github.io/docs/index.html)
+[You can find documentation here](https://hadiyarajesh.github.io/docs/instagram-api/index.html)
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
