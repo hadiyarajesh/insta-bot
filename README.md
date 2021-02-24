@@ -22,33 +22,31 @@ Instagram bot implemented in Kotlin to perform all major operations supported by
 
 ## Installation
 
-Add JitPack to your build.gradle file
-```
-allprojects {
-    repositories {
-        ...
-        maven { url 'https://jitpack.io' }
-    }
+Add JitPack to your build.gradle.kts file
+```kotlin
+repositories {
+    ...
+    maven(url = "https://jitpack.io")
 }
 ```
 
 Add Gradle dependency to your build.gradle file
-```
+```kotlin
 dependencies {
-    implementation 'com.github.hadiyarajesh:insta-bot:Tag'
+    implementation("com.github.hadiyarajesh:insta-bot:Tag")
 }
 ```
 
 ## Quick start
 Set your Instagram username and password in [Credentials.Kt](https://github.com/hadiyarajesh/insta-bot/blob/master/src/main/kotlin/Credentials.kt) file
-```
+```kotlin
 object Credentials {
     const val USERNAME = "your_instagram_username"
     const val PASSWORD = "your_instagram_password"
 }
 ```
 Initialize InstagramBot class with credential value and call prepare method. Then, call login method to login into instagram. (Prepare method must be called before login method)
-```
+```kotlin
     val username = Credentials.USERNAME
     val password = Credentials.PASSWORD
 
@@ -58,7 +56,7 @@ Initialize InstagramBot class with credential value and call prepare method. The
  ```
 
 Now you can perform any operations of your choice like. 
-```
+```kotlin
 // Get your own followers
 bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
 // Like 5 medias from explore page
