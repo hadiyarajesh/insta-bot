@@ -18,7 +18,7 @@ Instagram bot implemented in Kotlin to perform all major operations supported by
 
 [Flow](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-flow/) - A cold asynchronous data stream that sequentially emits values and completes normally or with an exception.
 
-[JsonPathLite](https://github.com/codeniko/JsonPathLite) - A lighter and more efficient implementation of JsonPath in Kotlin
+[JsonPathKt](https://github.com/codeniko/JsonPathKt) - A lighter and more efficient implementation of JsonPath in Kotlin
 
 ## Installation
 
@@ -40,13 +40,34 @@ dependencies {
 ```
 
 ## Quick start
-Initialize InstagramBot class with your username and password and call prepare method. Then call login method to login into instagram. (Prepare method must be called before login)
+Set your Instagram username and password in Credentials file
+```
+object Credentials {
+    const val USERNAME = "your_instagram_username"
+    const val PASSWORD = "your_instagram_password"
+}
+```
+Initialize InstagramBot class with credential value and call prepare method. Then, call login method to login into instagram. (Prepare method must be called before login method)
+```
+    val username = Credentials.USERNAME
+    val password = Credentials.PASSWORD
 
-![start](https://user-images.githubusercontent.com/12107428/88461018-2189ab80-cebe-11ea-94cb-5ba368005fb5.png)
+    val bot = InstagramBot()
+    bot.prepare(username)
+    bot.login(username, password)
+ ```
 
-
-Now you can perform any operations of your choice. 
-![main](https://user-images.githubusercontent.com/12107428/88461015-1f275180-cebe-11ea-9805-2be90a036ad8.png)
+Now you can perform any operations of your choice like. 
+```
+// Get your own followers
+bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
+// Like 5 medias from explore page
+bot.likeMediasByExplorePage(5).collect { println(it) }
+// Approve all pending follow requests
+bot.approveAllPendingFollowRequests().collect { println(it) }
+// Watch stories of 200 users based on given location
+bot.watchLocationUsersStories("enter_location_name_here", 200).collect { println(it) }
+```
 
 For more details, refer [BotTest](https://github.com/hadiarajesh/insta-bot/blob/master/src/main/kotlin/BotTest.kt) file.
 
