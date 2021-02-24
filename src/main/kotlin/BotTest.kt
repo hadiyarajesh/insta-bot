@@ -20,8 +20,8 @@ fun main() = runBlocking {
      * Actual time will be randomly generated each time between min and max time
      */
 
-    bot.minSleepTime = 150
-    bot.maxSleepTime = 300
+    bot.minSleepTime = 60
+    bot.maxSleepTime = 120
 
     // Provide your comment list here
     val commentsList = listOf("Sample comment 1", "Sample comment 2")
