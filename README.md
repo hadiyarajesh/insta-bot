@@ -57,8 +57,8 @@ Initialize InstagramBot class with credential value and call prepare method. The
 
 Now you can perform any operations of your choice like. 
 ```kotlin
-// Get your own followers
-bot.getSelfFollowing(Int.MAX_VALUE).collect { println(it) }
+// Get 100 followers of you
+bot.getSelfFollowing(100).collect { println(it) }
 // Like 5 medias from explore page
 bot.likeMediasByExplorePage(5).collect { println(it) }
 // Approve all pending follow requests
