@@ -35,7 +35,7 @@ allprojects {
 Add Gradle dependency to your build.gradle file
 ```
 dependencies {
-    implementation 'com.github.hadiyarajesh:insta-bot:2.0.0'
+    implementation 'com.github.hadiyarajesh:insta-bot:Tag'
 }
 ```
 
