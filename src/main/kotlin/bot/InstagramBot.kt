@@ -18,6 +18,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import kotlin.properties.Delegates
 import kotlin.random.Random
+import kotlin.system.exitProcess
 
 @ExperimentalCoroutinesApi
 class InstagramBot {
@@ -422,6 +423,10 @@ class InstagramBot {
      */
     private fun getUserIdByName(username: String): String? {
         val userInfo = getUserInfoByName(username)
+        if(api.statusCode == 404) {
+            println("User $username not found")
+            exitProcess(-1)
+        }
         return userInfo?.read<String>("$.pk")
     }
 
@@ -430,6 +435,10 @@ class InstagramBot {
      */
     private fun getUserNameById(userId: String): String? {
         val userInfo = getUserInfoByID(userId)
+        if(api.statusCode == 404) {
+            println("User $userId not found")
+            exitProcess(-1)
+        }
         return userInfo?.read<String>("$.username")
     }
 
