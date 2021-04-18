@@ -220,7 +220,7 @@ object InstagramAPI {
     fun solveChallenge(): Boolean {
         println("Checkpoint challenge required")
         val challengeUrl = lastJSON?.read<JSONObject>("$.challenge")?.read<String>("$.api_path")?.removeRange(0, 1)
-        request.prepare(endpoint = challengeUrl).send(true)
+        request.prepare(endpoint = challengeUrl, API_URL = "https://i.instagram.com/").send(true)
 
         val choices = getChallengeChoices()
         choices.forEach { println(it) }
