@@ -11,6 +11,7 @@ import util.ACTIONS
 import util.FILES
 import util.ITEMTYPE
 import java.io.File
+import java.lang.ClassCastException
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -427,7 +428,16 @@ class InstagramBot {
             println("User $username not found")
             exitProcess(-1)
         }
-        return userInfo?.read<String>("$.pk")
+
+        return try {
+            userInfo?.read<String>("$.pk")
+        } catch (e: ClassCastException) {
+            try {
+                userInfo?.read<Int>("$.pk").toString()
+            } catch (e: ClassCastException) {
+                userInfo?.read<Long>("$.pk").toString()
+            }
+        }
     }
 
     /**
