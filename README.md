@@ -1,4 +1,4 @@
-# Instabot
+# InstaBot
 Instagram bot implemented in Kotlin to perform all major operations supported by Instagram app.
 
 ## Features
